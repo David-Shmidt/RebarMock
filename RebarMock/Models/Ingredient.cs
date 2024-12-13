@@ -11,5 +11,7 @@ namespace RebarMock.Models
         public bool IsAvialable {get;set;} = true;
 
         public int ProductId {get;set; }
+
+        public ICollection<Product> Products { get; set;} = new List<Product>();
     }
 }

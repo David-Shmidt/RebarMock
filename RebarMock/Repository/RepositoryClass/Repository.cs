@@ -1,15 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RebarMock.Data;
 using RebarMock.Repository.RepositoryInterface;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RebarMock.Repository.RepositoryClass
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         protected DbContext _dbContext;
+
+        
         public Repository(DbContext appDbContext) 
-            {
+        {
                 _dbContext = appDbContext;
-            }
+        }
+
+        
         public TEntity Add(TEntity entity)
         {
             try

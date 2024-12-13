@@ -14,7 +14,7 @@ namespace RebarMock.Models
 
         public float Price { get; set; }    
 
-        public string Image{get;set;}
+        public string Image{get;set;} = "No image";
 
         [ForeignKey("Category")]
         [Required]
