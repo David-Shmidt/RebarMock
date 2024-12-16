@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RebarMock.Data;
 using RebarMock.Models;
 using RebarMock.Models.Dtos;
@@ -100,7 +101,20 @@ namespace RebarMock.Services
         {
             try
             {
-                return _unitOfWork.Products.Delete(productId);
+                Product product = _unitOfWork.Products.GetById(productId);
+                if(product != null)
+                {
+                    foreach(Ingredient ingredient in product.Ingredients)
+                    {
+                        ingredient.Products.Remove(product);
+                    }
+                }
+                bool isDeleted =  _unitOfWork.Products.Delete(productId);
+                if (isDeleted)
+                {
+                    _unitOfWork.SaveChanges();
+                }
+                return isDeleted;
             }
             catch(Exception ex)
             {
@@ -124,20 +138,33 @@ namespace RebarMock.Services
                 }
                 return productDtos;
             }
-            /*try
+            catch (Exception ex)
             {
-                ICollection<Product> products = await _unitOfWork.Products.GetProductsByCategoryId(categoryId);
-                ICollection<ProductDto> productDtos = new List<ProductDto>();
-                if(products != null)
+                throw ex;
+            }
+        }
+
+        public (bool,Product) CreateProductWithIngredients(ProductIngredientsDto productDto)
+        {
+            try
+            {
+                var query = _unitOfWork.Ingredients.GetFilteredIngredientsById(productDto.IngredientsIds);
+                List<Ingredient> ingredients = query.ToList();
+                bool isCreated = false;
+                Product productAdded = new Product();
+                if(!ingredients.IsNullOrEmpty())
                 {
-                    foreach(Product product in products)
+                    Product product = ProductConvertor.ConvertToModel(productDto, ingredients);
+                    productAdded = _unitOfWork.Products.Add(product);
+                    if(productAdded != null)
                     {
-                        productDtos.Add(ProductConvertor.ConvertToDto(product));
+                        isCreated = true;
+                        _unitOfWork.SaveChanges();
                     }
                 }
-                return productDtos;
-            }*/
-            catch (Exception ex)
+                return (isCreated, productAdded);
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }

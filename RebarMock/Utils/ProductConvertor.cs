@@ -35,5 +35,16 @@ namespace RebarMock.Utils
                 //Ingredients = productDto.Ingredients.ToList()
             };
         }
+
+        public static Product ConvertToModel(ProductIngredientsDto productDto, List<Ingredient> ingredients)
+        {
+            return new Product
+            {
+                ProductName = productDto.ProductName,
+                Price = productDto.Price,
+                CategoryId = productDto.CategoryId,
+                Ingredients = ingredients
+            };
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace RebarMock.Data
     {
         IProductRepository Products { get; }
         ICategoryRepository Categories { get; }
+        IIngredientsRepository Ingredients { get; }
         int SaveChanges();
 
     }

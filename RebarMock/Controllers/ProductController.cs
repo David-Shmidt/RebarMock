@@ -123,5 +123,37 @@ namespace RebarMock.Controllers
             ICollection<ProductDto> products = await _productService.GetProductsByCategoryId(categoryId);   
             return Ok(products);
         }
+
+        [HttpPost("productIngredients")]
+        public ActionResult<Product> CreateProductWithIngredients([FromBody] ProductIngredientsDto productDto) 
+        {
+            try
+            {
+                (bool isCreated, Product product) = _productService.CreateProductWithIngredients(productDto);
+                if(isCreated)
+                {
+                    List<string> ingredientsNames = new List<string>();
+                    foreach(var item in product.Ingredients)
+                    {
+                        ingredientsNames.Add(item.IngredientName);
+                    }
+                    return Ok(new
+                    {
+                        
+                        ProductName = product.ProductName,
+                        Price = product.Price,
+                        Ingredients = ingredientsNames
+                    });
+                }
+                else
+                {
+                    return BadRequest("Could not add product");
+                }
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

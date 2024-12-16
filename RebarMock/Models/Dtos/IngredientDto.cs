@@ -1,15 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RebarMock.Models
+namespace RebarMock.Models.Dtos
 {
-    public class Ingredient
+    public class IngredientDto
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
         public string IngredientName {get;set;}
         public bool IsAvialable {get;set;} = true;
 
-        public ICollection<Product> Products { get; set;} = new List<Product>();
+        //public ICollection<Product> Products { get; set;} = new List<Product>();
     }
 }

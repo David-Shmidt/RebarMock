@@ -8,12 +8,14 @@ namespace RebarMock.Data
         private ApplicationDbContext _context;
         public IProductRepository Products {get; private set; }
         public ICategoryRepository Categories {get; private set; }
+        public IIngredientsRepository Ingredients {get; private set; }
             
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Products = new ProductRepository(context);
             Categories = new CategoryRepository(context);
+            Ingredients = new IngredientRepository(context);
         }
 
 
