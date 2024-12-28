@@ -17,5 +17,11 @@ namespace RebarMock.Repository.RepositoryClass
             var query = _appContext.Products.Where(p => p.CategoryId == categoryId);
             return query;
         }
+
+        public IQueryable<Product> GetProductsWithIngredients()
+        {
+            var query = _appContext.Products.Include(p=> p.Ingredients);
+            return query;
+        }
     }
 }

@@ -25,6 +25,7 @@ namespace RebarMock.Identity.IdentityControllers
             var result = await _userManager.CreateAsync(user , userModel.Password);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "Admin");
                 return (Ok(new {Sucess=true, Message = "Regitration successfull"}));
             }
             else
@@ -46,6 +47,8 @@ namespace RebarMock.Identity.IdentityControllers
                 return BadRequest(result);
             }
         }
+
+
 
     }
 }

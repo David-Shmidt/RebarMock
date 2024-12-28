@@ -1,5 +1,6 @@
 ﻿using RebarMock.Models.Dtos;
 using RebarMock.Models;
+using System.Buffers.Text;
 
 namespace RebarMock.Utils
 {
@@ -7,20 +8,29 @@ namespace RebarMock.Utils
     {
         public static ProductDto ConvertToDto(Product product)
         {
-            /*var ingredients = new List<Ingredient>();
-            foreach(var item in product.Ingredients)
+
+            //Convert the ingredient object into a simple ingredient string to store the name
+            var ingredients = new List<string>();
+            foreach (var item in product.Ingredients)
             {
-                ingredients.Add(item);
-            }*/
+                ingredients.Add(item.IngredientName);
+            }
+
+            byte[] image = new byte[0];
+            //extract the actual image using image path
+            if (File.Exists(product.Image))
+            {
+                image = File.ReadAllBytes(product.Image);
+            }
 
             return new ProductDto()
             {
                 Id = product.Id,
-                Image = product.Image,
+                Image = Convert.ToBase64String(image),
                 ProductName = product.ProductName,
                 Price = product.Price,
                 CategoryId = product.CategoryId,
-                //Ingredients = product.Ingredients.ToList()
+                Ingredients = ingredients
             };
         }
 

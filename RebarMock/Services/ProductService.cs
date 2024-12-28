@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.DataProtection.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RebarMock.Data;
 using RebarMock.Models;
@@ -21,7 +22,8 @@ namespace RebarMock.Services
             ICollection<ProductDto> products = new List<ProductDto>();
             try
             {
-                var items = await _unitOfWork.Products.GetAll();
+                var query = _unitOfWork.Products.GetProductsWithIngredients();
+                ICollection<Product> items = await query.ToListAsync();
                 foreach(var item in items)
                 {
                     products.Add(ProductConvertor.ConvertToDto(item));
@@ -95,6 +97,30 @@ namespace RebarMock.Services
                 throw ex;
             }
             return updated;
+        }
+
+        public bool UpdateProductImage(string image, int productId)
+        {
+            bool updated = false;
+            try
+            {
+                Product product = _unitOfWork.Products.GetById(productId);
+                if(product != null)
+                {
+                    product.Image = image;
+                    var result = _unitOfWork.Products.Update(product);
+                    if(result != null)
+                    {
+                        updated = true;
+                        _unitOfWork.SaveChanges();
+                    }
+                }
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public bool RemoveProductById(int productId)

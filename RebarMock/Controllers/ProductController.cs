@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RebarMock.Data;
 using RebarMock.Models;
@@ -18,6 +19,7 @@ namespace RebarMock.Controllers
             _productService = new ProductService(unitOfWork);
         }
 
+        //Get All Products
         [HttpGet]
         public async Task<ActionResult<ICollection<ProductDto>>> GetAllProducts()
         {
@@ -55,6 +57,7 @@ namespace RebarMock.Controllers
             }
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public ActionResult<ProductDto> CreateProduct([FromBody]ProductDto product)
         {
@@ -72,6 +75,7 @@ namespace RebarMock.Controllers
             }
             catch (Exception ex)
             {
+                
                 return NotFound("Error: " + ex.Message);
             }
         }
@@ -95,6 +99,22 @@ namespace RebarMock.Controllers
             {
                 return NotFound("Error: " + ex.Message);
             }
+        }
+
+        [HttpPut("productImage/{productId}")]
+        public ActionResult<bool> UpdateProductImageById([FromBody]string image, int productId)
+        {
+            try
+            {
+                bool isUpdated = _productService.UpdateProductImage(image, productId);
+                if (isUpdated)
+                {
+                    return Ok("Image updated");
+                }
+                else { return BadRequest("Image Could not be updated");}
+            }
+            catch(Exception ex) { return BadRequest(ex.Message);}
+
         }
 
         [HttpDelete("{productId}")]

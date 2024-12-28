@@ -11,8 +11,11 @@ namespace RebarMock.Models.Dtos
         public string ProductName { get; set; }
         public int CategoryId {get;set;}
         public string Image{get;set;}
+
+        public byte[] ImageData{get;set;}
         public float Price{get;set; }
-        //public ICollection<Ingredient> Ingredients {get;set;} = new List<Ingredient>();
+        
+        public ICollection<string> Ingredients {get;set;} = new List<string>();
 
         
     }
